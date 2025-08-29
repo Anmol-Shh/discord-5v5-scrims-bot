@@ -567,7 +567,7 @@ class AdminCommands(commands.Cog):
 
     # Utility Commands
     @app_commands.command(name="botstats")
-    async def show_bot_stats(self, interaction: discord.Interaction):
+    async def show_stats(self, interaction: discord.Interaction):
         """Show bot statistics"""
         try:
             total_players = await self.db.get_player_match_count()
