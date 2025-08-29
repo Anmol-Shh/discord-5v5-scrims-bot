@@ -47,14 +47,14 @@ class AdminCommands(commands.Cog):
         elif action.lower() == "set":
             if not setting or not value:
                 await interaction.response.send_message(
-                    "❌ Please provide both setting and value for set command!", 
+                    "âŒ Please provide both setting and value for set command!", 
                     ephemeral=True
                 )
                 return
             await self.set_config(interaction, setting, value)
         else:
             await interaction.response.send_message(
-                "❌ Invalid action! Use 'show' or 'set'.", 
+                "âŒ Invalid action! Use 'show' or 'set'.", 
                 ephemeral=True
             )
 
@@ -64,12 +64,12 @@ class AdminCommands(commands.Cog):
             guild_config = await self.db.get_config(interaction.guild.id)
 
             embed = discord.Embed(
-                title="⚙️ Bot Configuration",
+                title="âš™ï¸ Bot Configuration",
                 color=self.config.COLOR_INFO
             )
 
             embed.add_field(
-                name="🏆 Points System",
+                name="ðŸ† Points System",
                 value=f"Win: +{guild_config.points_win}\n"
                       f"Loss: {guild_config.points_loss}\n"
                       f"MVP: +{guild_config.points_mvp}",
@@ -77,7 +77,7 @@ class AdminCommands(commands.Cog):
             )
 
             embed.add_field(
-                name="⏰ Timeouts",
+                name="â° Timeouts",
                 value=f"AFK Timeout: {guild_config.timeout_minutes}min\n"
                       f"No Proof Penalty: -{guild_config.no_proof_penalty} pts\n"
                       f"Proof Timeout: {guild_config.proof_timeout_minutes}min",
@@ -85,9 +85,9 @@ class AdminCommands(commands.Cog):
             )
 
             embed.add_field(
-                name="🎮 Match Settings",
+                name="ðŸŽ® Match Settings",
                 value=f"Queue Size: {guild_config.queue_size}\n"
-                      f"Rank Roles: {'✅' if guild_config.rank_roles_enabled else '❌'}",
+                      f"Rank Roles: {'âœ…' if guild_config.rank_roles_enabled else 'âŒ'}",
                 inline=True
             )
 
@@ -98,7 +98,7 @@ class AdminCommands(commands.Cog):
         except Exception as e:
             logger.error(f"Error showing config: {e}")
             await interaction.response.send_message(
-                "❌ Error retrieving configuration!", 
+                "âŒ Error retrieving configuration!", 
                 ephemeral=True
             )
 
@@ -113,14 +113,14 @@ class AdminCommands(commands.Cog):
                     int_value = int(value)
                     if not ValidationHelper.validate_points(int_value):
                         await interaction.response.send_message(
-                            "❌ Points value must be between -10000 and 10000!", 
+                            "âŒ Points value must be between -10000 and 10000!", 
                             ephemeral=True
                         )
                         return
                     await self.db.update_config(interaction.guild.id, **{setting: int_value})
                 except ValueError:
                     await interaction.response.send_message(
-                        "❌ Invalid number format!", 
+                        "âŒ Invalid number format!", 
                         ephemeral=True
                     )
                     return
@@ -130,7 +130,7 @@ class AdminCommands(commands.Cog):
                     int_value = int(value)
                     if not ValidationHelper.validate_points(int_value):
                         await interaction.response.send_message(
-                            "❌ Points value must be between -10000 and 10000!", 
+                            "âŒ Points value must be between -10000 and 10000!", 
                             ephemeral=True
                         )
                         return
@@ -140,7 +140,7 @@ class AdminCommands(commands.Cog):
                     await self.db.update_config(interaction.guild.id, **{setting: int_value})
                 except ValueError:
                     await interaction.response.send_message(
-                        "❌ Invalid number format!", 
+                        "âŒ Invalid number format!", 
                         ephemeral=True
                     )
                     return
@@ -150,14 +150,14 @@ class AdminCommands(commands.Cog):
                     int_value = int(value)
                     if not ValidationHelper.validate_timeout_minutes(int_value):
                         await interaction.response.send_message(
-                            "❌ Timeout must be between 1 and 1440 minutes!", 
+                            "âŒ Timeout must be between 1 and 1440 minutes!", 
                             ephemeral=True
                         )
                         return
                     await self.db.update_config(interaction.guild.id, **{setting: int_value})
                 except ValueError:
                     await interaction.response.send_message(
-                        "❌ Invalid number format!", 
+                        "âŒ Invalid number format!", 
                         ephemeral=True
                     )
                     return
@@ -167,14 +167,14 @@ class AdminCommands(commands.Cog):
                     int_value = int(value)
                     if not ValidationHelper.validate_queue_size(int_value):
                         await interaction.response.send_message(
-                            "❌ Queue size must be between 4 and 20!", 
+                            "âŒ Queue size must be between 4 and 20!", 
                             ephemeral=True
                         )
                         return
                     await self.db.update_config(interaction.guild.id, **{setting: int_value})
                 except ValueError:
                     await interaction.response.send_message(
-                        "❌ Invalid number format!", 
+                        "âŒ Invalid number format!", 
                         ephemeral=True
                     )
                     return
@@ -184,14 +184,14 @@ class AdminCommands(commands.Cog):
                     int_value = int(value)
                     if not ValidationHelper.validate_points(int_value):
                         await interaction.response.send_message(
-                            "❌ Penalty must be between 0 and 10000!", 
+                            "âŒ Penalty must be between 0 and 10000!", 
                             ephemeral=True
                         )
                         return
                     await self.db.update_config(interaction.guild.id, **{setting: int_value})
                 except ValueError:
                     await interaction.response.send_message(
-                        "❌ Invalid number format!", 
+                        "âŒ Invalid number format!", 
                         ephemeral=True
                     )
                     return
@@ -202,7 +202,7 @@ class AdminCommands(commands.Cog):
 
             else:
                 await interaction.response.send_message(
-                    f"❌ Unknown setting '{setting}'!\n"
+                    f"âŒ Unknown setting '{setting}'!\n"
                     f"Available settings: points_win, points_loss, points_mvp, "
                     f"timeout_minutes, proof_timeout_minutes, queue_size, "
                     f"no_proof_penalty, rank_roles_enabled", 
@@ -211,14 +211,14 @@ class AdminCommands(commands.Cog):
                 return
 
             await interaction.response.send_message(
-                f"✅ Updated {setting} to {value}!", 
+                f"âœ… Updated {setting} to {value}!", 
                 ephemeral=True
             )
 
         except Exception as e:
             logger.error(f"Error setting config: {e}")
             await interaction.response.send_message(
-                "❌ Error updating configuration!", 
+                "âŒ Error updating configuration!", 
                 ephemeral=True
             )
 
@@ -237,7 +237,7 @@ class AdminCommands(commands.Cog):
 
         if action not in ["add", "remove", "reset", "set"]:
             await interaction.response.send_message(
-                "❌ Invalid action! Use add, remove, reset, or set.", 
+                "âŒ Invalid action! Use add, remove, reset, or set.", 
                 ephemeral=True
             )
             return
@@ -251,31 +251,31 @@ class AdminCommands(commands.Cog):
             if action == "add":
                 if not ValidationHelper.validate_points(amount):
                     await interaction.response.send_message(
-                        "❌ Amount must be between -10000 and 10000!", 
+                        "âŒ Amount must be between -10000 and 10000!", 
                         ephemeral=True
                     )
                     return
                 await self.db.update_player_points(player.id, amount)
                 await interaction.response.send_message(
-                    f"✅ Added {amount} points to {player.display_name}!"
+                    f"âœ… Added {amount} points to {player.display_name}!"
                 )
 
             elif action == "remove":
                 if not ValidationHelper.validate_points(amount):
                     await interaction.response.send_message(
-                        "❌ Amount must be between -10000 and 10000!", 
+                        "âŒ Amount must be between -10000 and 10000!", 
                         ephemeral=True
                     )
                     return
                 await self.db.update_player_points(player.id, -amount)
                 await interaction.response.send_message(
-                    f"✅ Removed {amount} points from {player.display_name}!"
+                    f"âœ… Removed {amount} points from {player.display_name}!"
                 )
 
             elif action == "set":
                 if not ValidationHelper.validate_points(amount):
                     await interaction.response.send_message(
-                        "❌ Amount must be between -10000 and 10000!", 
+                        "âŒ Amount must be between -10000 and 10000!", 
                         ephemeral=True
                     )
                     return
@@ -283,7 +283,7 @@ class AdminCommands(commands.Cog):
                 difference = amount - current_points
                 await self.db.update_player_points(player.id, difference)
                 await interaction.response.send_message(
-                    f"✅ Set {player.display_name}'s points to {amount}!"
+                    f"âœ… Set {player.display_name}'s points to {amount}!"
                 )
 
             elif action == "reset":
@@ -291,13 +291,13 @@ class AdminCommands(commands.Cog):
                 difference = self.config.STARTING_POINTS - current_points
                 await self.db.update_player_points(player.id, difference)
                 await interaction.response.send_message(
-                    f"✅ Reset {player.display_name}'s points to {self.config.STARTING_POINTS}!"
+                    f"âœ… Reset {player.display_name}'s points to {self.config.STARTING_POINTS}!"
                 )
 
         except Exception as e:
             logger.error(f"Error managing points: {e}")
             await interaction.response.send_message(
-                "❌ Error managing points!", 
+                "âŒ Error managing points!", 
                 ephemeral=True
             )
 
@@ -316,7 +316,7 @@ class AdminCommands(commands.Cog):
 
         if action not in ["add", "remove", "check"]:
             await interaction.response.send_message(
-                "❌ Invalid action! Use add, remove, or check.", 
+                "âŒ Invalid action! Use add, remove, or check.", 
                 ephemeral=True
             )
             return
@@ -330,20 +330,20 @@ class AdminCommands(commands.Cog):
             if action == "add":
                 if not ValidationHelper.validate_timeout_minutes(minutes):
                     await interaction.response.send_message(
-                        "❌ Timeout must be between 1 and 1440 minutes!", 
+                        "âŒ Timeout must be between 1 and 1440 minutes!", 
                         ephemeral=True
                     )
                     return
 
                 await self.db.set_player_timeout(player.id, minutes)
                 await interaction.response.send_message(
-                    f"✅ Applied {minutes} minute timeout to {player.display_name}!"
+                    f"âœ… Applied {minutes} minute timeout to {player.display_name}!"
                 )
 
             elif action == "remove":
                 await self.db.remove_player_timeout(player.id)
                 await interaction.response.send_message(
-                    f"✅ Removed timeout from {player.display_name}!"
+                    f"âœ… Removed timeout from {player.display_name}!"
                 )
 
             elif action == "check":
@@ -351,17 +351,17 @@ class AdminCommands(commands.Cog):
                     from utils.helpers import TimeHelper
                     time_left = TimeHelper.format_time_remaining(db_player.timeout_until)
                     await interaction.response.send_message(
-                        f"⏰ {player.display_name} is timed out for {time_left}!"
+                        f"â° {player.display_name} is timed out for {time_left}!"
                     )
                 else:
                     await interaction.response.send_message(
-                        f"✅ {player.display_name} is not timed out!"
+                        f"âœ… {player.display_name} is not timed out!"
                     )
 
         except Exception as e:
             logger.error(f"Error managing timeout: {e}")
             await interaction.response.send_message(
-                "❌ Error managing timeout!", 
+                "âŒ Error managing timeout!", 
                 ephemeral=True
             )
 
@@ -378,7 +378,7 @@ class AdminCommands(commands.Cog):
         """Manage scrimmage matches"""
         if not PermissionHelper.is_admin(interaction.user):
             await interaction.response.send_message(
-                "❌ You need administrator permission for this command!", 
+                "âŒ You need administrator permission for this command!", 
                 ephemeral=True
             )
             return
@@ -388,7 +388,7 @@ class AdminCommands(commands.Cog):
         if action == "cancel":
             if not match_id:
                 await interaction.response.send_message(
-                    "❌ Please provide a match ID to cancel!", 
+                    "âŒ Please provide a match ID to cancel!", 
                     ephemeral=True
                 )
                 return
@@ -397,7 +397,7 @@ class AdminCommands(commands.Cog):
         elif action == "forcewinner":
             if not match_id or not value:
                 await interaction.response.send_message(
-                    "❌ Please provide match ID and team number (1 or 2)!", 
+                    "âŒ Please provide match ID and team number (1 or 2)!", 
                     ephemeral=True
                 )
                 return
@@ -406,7 +406,7 @@ class AdminCommands(commands.Cog):
         elif action == "forcemvp":
             if not match_id or not value:
                 await interaction.response.send_message(
-                    "❌ Please provide match ID and player mention!", 
+                    "âŒ Please provide match ID and player mention!", 
                     ephemeral=True
                 )
                 return
@@ -414,7 +414,7 @@ class AdminCommands(commands.Cog):
 
         else:
             await interaction.response.send_message(
-                "❌ Invalid action! Use cancel, forcewinner, or forcemvp.", 
+                "âŒ Invalid action! Use cancel, forcewinner, or forcemvp.", 
                 ephemeral=True
             )
 
@@ -424,7 +424,7 @@ class AdminCommands(commands.Cog):
             match = await self.db.get_match(match_id)
             if not match:
                 await interaction.response.send_message(
-                    f"❌ Match {match_id} not found!", 
+                    f"âŒ Match {match_id} not found!", 
                     ephemeral=True
                 )
                 return
@@ -435,16 +435,16 @@ class AdminCommands(commands.Cog):
             # Try to notify match channel
             channel = self.bot.get_channel(match.channel_id)
             if channel:
-                await channel.send(f"❌ **Match {match_id} cancelled by admin.**")
+                await channel.send(f"âŒ **Match {match_id} cancelled by admin.**")
 
             await interaction.response.send_message(
-                f"✅ Match {match_id} has been cancelled!"
+                f"âœ… Match {match_id} has been cancelled!"
             )
 
         except Exception as e:
             logger.error(f"Error force cancelling match: {e}")
             await interaction.response.send_message(
-                "❌ Error cancelling match!", 
+                "âŒ Error cancelling match!", 
                 ephemeral=True
             )
 
@@ -454,7 +454,7 @@ class AdminCommands(commands.Cog):
             match = await self.db.get_match(match_id)
             if not match:
                 await interaction.response.send_message(
-                    f"❌ Match {match_id} not found!", 
+                    f"âŒ Match {match_id} not found!", 
                     ephemeral=True
                 )
                 return
@@ -465,7 +465,7 @@ class AdminCommands(commands.Cog):
                     raise ValueError()
             except ValueError:
                 await interaction.response.send_message(
-                    "❌ Team must be 1 or 2!", 
+                    "âŒ Team must be 1 or 2!", 
                     ephemeral=True
                 )
                 return
@@ -474,13 +474,13 @@ class AdminCommands(commands.Cog):
             await self.db.complete_match(match_id, team, None, None)
 
             await interaction.response.send_message(
-                f"✅ Forced Team {team} as winner for match {match_id}!"
+                f"âœ… Forced Team {team} as winner for match {match_id}!"
             )
 
         except Exception as e:
             logger.error(f"Error forcing winner: {e}")
             await interaction.response.send_message(
-                "❌ Error setting winner!", 
+                "âŒ Error setting winner!", 
                 ephemeral=True
             )
 
@@ -490,7 +490,7 @@ class AdminCommands(commands.Cog):
             match = await self.db.get_match(match_id)
             if not match:
                 await interaction.response.send_message(
-                    f"❌ Match {match_id} not found!", 
+                    f"âŒ Match {match_id} not found!", 
                     ephemeral=True
                 )
                 return
@@ -500,7 +500,7 @@ class AdminCommands(commands.Cog):
             user_id_match = re.match(r'<@!?(\d+)>', player_mention)
             if not user_id_match:
                 await interaction.response.send_message(
-                    "❌ Invalid player mention!", 
+                    "âŒ Invalid player mention!", 
                     ephemeral=True
                 )
                 return
@@ -510,7 +510,7 @@ class AdminCommands(commands.Cog):
             # Verify player is in match
             if user_id not in match.all_players:
                 await interaction.response.send_message(
-                    "❌ Player is not in this match!", 
+                    "âŒ Player is not in this match!", 
                     ephemeral=True
                 )
                 return
@@ -521,13 +521,13 @@ class AdminCommands(commands.Cog):
             await self.db.complete_match(match_id, match.winner_team or 1, user_id, None)
 
             await interaction.response.send_message(
-                f"✅ Forced <@{user_id}> as MVP for match {match_id}!"
+                f"âœ… Forced <@{user_id}> as MVP for match {match_id}!"
             )
 
         except Exception as e:
             logger.error(f"Error forcing MVP: {e}")
             await interaction.response.send_message(
-                "❌ Error setting MVP!", 
+                "âŒ Error setting MVP!", 
                 ephemeral=True
             )
 
@@ -537,13 +537,13 @@ class AdminCommands(commands.Cog):
         """Reset the entire leaderboard (DANGEROUS)"""
         if not PermissionHelper.is_admin(interaction.user):
             await interaction.response.send_message(
-                "❌ You need administrator permission for this command!", 
+                "âŒ You need administrator permission for this command!", 
                 ephemeral=True
             )
             return
 
         await interaction.response.send_message(
-            "⚠️ **WARNING: This will reset ALL player data!**\n"
+            "âš ï¸ **WARNING: This will reset ALL player data!**\n"
             "This action cannot be undone. Type `RESET LEADERBOARD` to confirm.",
             ephemeral=True
         )
@@ -555,7 +555,7 @@ class AdminCommands(commands.Cog):
         """Clear match history"""
         if not PermissionHelper.is_admin(interaction.user):
             await interaction.response.send_message(
-                "❌ You need administrator permission for this command!", 
+                "âŒ You need administrator permission for this command!", 
                 ephemeral=True
             )
             return
@@ -563,41 +563,41 @@ class AdminCommands(commands.Cog):
         try:
             await self.db.clear_match_history(interaction.guild.id)
             await interaction.response.send_message(
-                "✅ Match history has been cleared!"
+                "âœ… Match history has been cleared!"
             )
         except Exception as e:
             logger.error(f"Error clearing history: {e}")
             await interaction.response.send_message(
-                "❌ Error clearing match history!", 
+                "âŒ Error clearing match history!", 
                 ephemeral=True
             )
 
     # Utility Commands
     @app_commands.command(name="botstats")
-    async def bot_stats(self, interaction: discord.Interaction):
+    async def stats_command(self, interaction: discord.Interaction):
         """Show bot statistics"""
         try:
             total_players = await self.db.get_player_match_count()
 
             embed = discord.Embed(
-                title="🤖 Bot Statistics",
+                title="ðŸ¤– Bot Statistics",
                 color=self.config.COLOR_INFO
             )
 
             embed.add_field(
-                name="📊 Database",
+                name="ðŸ“Š Database",
                 value=f"Total Players: {total_players}",
                 inline=True
             )
 
             embed.add_field(
-                name="🏠 Servers",
+                name="ðŸ  Servers",
                 value=f"Connected: {len(self.bot.guilds)}",
                 inline=True
             )
 
             embed.add_field(
-                name="⚡ Performance",
+                name="âš¡ Performance",
                 value=f"Latency: {self.bot.latency * 1000:.0f}ms",
                 inline=True
             )
@@ -607,7 +607,7 @@ class AdminCommands(commands.Cog):
         except Exception as e:
             logger.error(f"Error getting bot stats: {e}")
             await interaction.response.send_message(
-                "❌ Error retrieving bot statistics!", 
+                "âŒ Error retrieving bot statistics!", 
                 ephemeral=True
             )
 
@@ -621,11 +621,11 @@ class AdminCommands(commands.Cog):
 
             if has_perms:
                 embed = EmbedBuilder.success_embed(
-                    "✅ Bot has all required permissions!"
+                    "âœ… Bot has all required permissions!"
                 )
             else:
                 embed = EmbedBuilder.warning_embed(
-                    f"⚠️ Bot is missing permissions:\n• " + "\n• ".join(missing_perms),
+                    f"âš ï¸ Bot is missing permissions:\nâ€¢ " + "\nâ€¢ ".join(missing_perms),
                     "Missing Permissions"
                 )
 
@@ -634,7 +634,7 @@ class AdminCommands(commands.Cog):
         except Exception as e:
             logger.error(f"Error checking permissions: {e}")
             await interaction.response.send_message(
-                "❌ Error checking permissions!", 
+                "âŒ Error checking permissions!", 
                 ephemeral=True
             )
 
