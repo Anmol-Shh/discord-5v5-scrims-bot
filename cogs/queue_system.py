@@ -232,6 +232,9 @@ class QueueSystem(commands.Cog):
                 await self.send_error_to_queue_channel(guild, "Failed to create match in database!")
                 return
 
+            # Notify players before clearing queue
+            player_mentions = " ".join([f"<@{pid}>" for pid in queue.players])
+
             # Clear queue
             queue.players.clear()
             queue.last_left_player = None
@@ -241,8 +244,6 @@ class QueueSystem(commands.Cog):
             # Start drafting in match channel
             await self.bot.get_cog("MatchManagement").start_drafting(match_channel, match)
 
-            # Notify players
-            player_mentions = " ".join([f"<@{pid}>" for pid in queue.players])
             await match_channel.send(
                 f"🎮 **Match {match_id} Started!**\n\n"
                 f"{player_mentions}\n\n"
@@ -300,23 +301,16 @@ class QueueSystem(commands.Cog):
     @commands.command(name="forcestart")
     @commands.has_permissions(manage_messages=True)
     async def force_start(self, ctx):
-        """Force start a match with current queue (Admin only)"""
+        """Force start a match with a full queue (Admin only)"""
         queue = await self.get_or_create_queue(ctx.guild.id)
+        guild_config = await self.db.get_config(ctx.guild.id)
 
-        if len(queue.players) < 4:
-            await ctx.send("❌ Need at least 4 players to start a match!")
-            return
-
-        # Pad queue to required size if needed
-        while len(queue.players) < self.config.QUEUE_SIZE:
-            # You could add bot players here if needed, for now just require full queue
-            pass
-
-        if len(queue.players) == self.config.QUEUE_SIZE:
+        # Check if the queue has the exact number of players required
+        if len(queue.players) == guild_config.queue_size:
             await self.start_match(ctx.guild, queue)
             await ctx.send("✅ Match force started!")
         else:
-            await ctx.send(f"❌ Need exactly {self.config.QUEUE_SIZE} players to start!")
+            await ctx.send(f"❌ Need exactly {guild_config.queue_size} players to start!")
 
 async def setup(bot):
     """Setup function for loading the cog"""
