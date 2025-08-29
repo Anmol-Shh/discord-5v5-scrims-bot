@@ -21,18 +21,19 @@ logger = logging.getLogger(__name__)
 
 class QueueView(discord.ui.View):
     """View for queue interaction buttons"""
-
+    
     def __init__(self, cog):
         super().__init__(timeout=None)
         self.cog = cog
-
-    @discord.ui.button(label='Join Queue', style=discord.ButtonStyle.green, emoji='ðŸŸ¢')
+        
+    @discord.ui.button(label='Join Queue 🟢', style=discord.ButtonStyle.green)
     async def join_queue(self, interaction: discord.Interaction, button: discord.ui.Button):
         await self.cog.handle_join_queue(interaction)
-
-    @discord.ui.button(label='Leave Queue', style=discord.ButtonStyle.red, emoji='ðŸ”´')
+        
+    @discord.ui.button(label='Leave Queue 🔴', style=discord.ButtonStyle.red)
     async def leave_queue(self, interaction: discord.Interaction, button: discord.ui.Button):
         await self.cog.handle_leave_queue(interaction)
+
 
 class QueueSystem(commands.Cog):
     """Manages the 5v5 scrim queue system"""
