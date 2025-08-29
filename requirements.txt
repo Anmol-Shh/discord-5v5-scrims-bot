@@ -1,0 +1,19 @@
+# Discord.py and related
+discord.py[voice]==2.3.2
+aiohttp==3.9.1
+
+# Database
+asyncpg==0.29.0
+
+# Environment variables
+python-dotenv==1.0.0
+
+# Date/time handling
+python-dateutil==2.8.2
+
+# Logging
+colorlog==6.8.0
+
+# Development tools (optional)
+black==23.12.1
+flake8==6.1.0

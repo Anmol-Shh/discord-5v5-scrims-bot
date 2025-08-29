@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: scrims_bot_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME:-scrims_bot}
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    networks:
+      - scrims_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-postgres}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  scrims_bot:
+    build: .
+    container_name: scrims_bot_app
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      - DISCORD_TOKEN=${DISCORD_TOKEN}
+      - BOT_PREFIX=${BOT_PREFIX:-!}
+      - GUILD_ID=${GUILD_ID}
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=${DB_NAME:-scrims_bot}
+      - DB_USER=${DB_USER:-postgres}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - SCRIMS_QUEUE_CHANNEL=${SCRIMS_QUEUE_CHANNEL}
+      - SCRIM_HISTORY_CHANNEL=${SCRIM_HISTORY_CHANNEL}
+      - SCRIM_CATEGORY=${SCRIM_CATEGORY}
+      - QUEUE_SIZE=${QUEUE_SIZE:-10}
+      - POINTS_WIN=${POINTS_WIN:-30}
+      - POINTS_LOSS=${POINTS_LOSS:--30}
+      - POINTS_MVP=${POINTS_MVP:-10}
+      - STARTING_POINTS=${STARTING_POINTS:-1000}
+      - TIMEOUT_MINUTES=${TIMEOUT_MINUTES:-30}
+      - NO_PROOF_PENALTY=${NO_PROOF_PENALTY:-100}
+      - PROOF_TIMEOUT_MINUTES=${PROOF_TIMEOUT_MINUTES:-30}
+      - RANK_ROLES_ENABLED=${RANK_ROLES_ENABLED:-true}
+    networks:
+      - scrims_network
+    volumes:
+      - ./logs:/app/logs
+
+networks:
+  scrims_network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local
