@@ -26,11 +26,11 @@ class QueueView(discord.ui.View):
         super().__init__(timeout=None)
         self.cog = cog
 
-    @discord.ui.button(label='Join Queue', style=discord.ButtonStyle.green, emoji='🟢')
+    @discord.ui.button(label='Join Queue', style=discord.ButtonStyle.green, emoji='ðŸŸ¢')
     async def join_queue(self, interaction: discord.Interaction, button: discord.ui.Button):
         await self.cog.handle_join_queue(interaction)
 
-    @discord.ui.button(label='Leave Queue', style=discord.ButtonStyle.red, emoji='🔴')
+    @discord.ui.button(label='Leave Queue', style=discord.ButtonStyle.red, emoji='ðŸ”´')
     async def leave_queue(self, interaction: discord.Interaction, button: discord.ui.Button):
         await self.cog.handle_leave_queue(interaction)
 
@@ -70,7 +70,7 @@ class QueueSystem(commands.Cog):
     async def setup_queue(self, ctx):
         """Set up the queue embed in current channel"""
         if not ctx.author.guild_permissions.manage_messages:
-            await ctx.send("❌ You need Manage Messages permission to set up the queue!", ephemeral=True)
+            await ctx.send("âŒ You need Manage Messages permission to set up the queue!", ephemeral=True)
             return
 
         queue = await self.get_or_create_queue(ctx.guild.id)
@@ -94,7 +94,7 @@ class QueueSystem(commands.Cog):
         await self.update_queue_in_db(queue)
         self.queue_messages[ctx.guild.id] = message.id
 
-        await ctx.send("✅ Queue has been set up in this channel!", ephemeral=True)
+        await ctx.send("âœ… Queue has been set up in this channel!", ephemeral=True)
 
     async def handle_join_queue(self, interaction: discord.Interaction):
         """Handle player joining queue"""
@@ -232,9 +232,6 @@ class QueueSystem(commands.Cog):
                 await self.send_error_to_queue_channel(guild, "Failed to create match in database!")
                 return
 
-            # Notify players before clearing queue
-            player_mentions = " ".join([f"<@{pid}>" for pid in queue.players])
-
             # Clear queue
             queue.players.clear()
             queue.last_left_player = None
@@ -244,12 +241,14 @@ class QueueSystem(commands.Cog):
             # Start drafting in match channel
             await self.bot.get_cog("MatchManagement").start_drafting(match_channel, match)
 
+            # Notify players
+            player_mentions = " ".join([f"<@{pid}>" for pid in queue.players])
             await match_channel.send(
-                f"🎮 **Match {match_id} Started!**\n\n"
+                f"ðŸŽ® **Match {match_id} Started!**\n\n"
                 f"{player_mentions}\n\n"
-                f"👑 **Leaders:**\n"
-                f"• <@{leader1}> - Gets first draft pick\n"
-                f"• <@{leader2}> - Must create lobby\n\n"
+                f"ðŸ‘‘ **Leaders:**\n"
+                f"â€¢ <@{leader1}> - Gets first draft pick\n"
+                f"â€¢ <@{leader2}> - Must create lobby\n\n"
                 f"**Drafting will begin shortly...**"
             )
 
@@ -265,7 +264,7 @@ class QueueSystem(commands.Cog):
                 for channel in guild.text_channels:
                     try:
                         message = await channel.fetch_message(message_id)
-                        await message.channel.send(f"❌ **Error:** {error_message}")
+                        await message.channel.send(f"âŒ **Error:** {error_message}")
                         return
                     except (discord.NotFound, discord.Forbidden):
                         continue
@@ -296,21 +295,27 @@ class QueueSystem(commands.Cog):
         await self.update_queue_in_db(queue)
         await self.update_queue_message(ctx.guild.id)
 
-        await ctx.send("✅ Queue has been cleared!")
+        await ctx.send("âœ… Queue has been cleared!")
 
     @commands.command(name="forcestart")
     @commands.has_permissions(manage_messages=True)
     async def force_start(self, ctx):
-        """Force start a match with a full queue (Admin only)"""
+        """Force start a match with current queue (Admin only)"""
         queue = await self.get_or_create_queue(ctx.guild.id)
-        guild_config = await self.db.get_config(ctx.guild.id)
 
-        # Check if the queue has the exact number of players required
-        if len(queue.players) == guild_config.queue_size:
-            await self.start_match(ctx.guild, queue)
-            await ctx.send("✅ Match force started!")
-        else:
-            await ctx.send(f"❌ Need exactly {guild_config.queue_size} players to start!")
+        current_players = len(queue.players)
+
+        if current_players < 4:
+            await ctx.send("âŒ Need at least 4 players to start a match!")
+            return
+
+        if current_players % 2 != 0:
+            await ctx.send("âŒ Need an even number of players for balanced teams!")
+            return
+
+        # Force start with current players
+        await self.start_match(ctx.guild, queue)
+        await ctx.send(f"âœ… Match force started with {current_players} players!")
 
 async def setup(bot):
     """Setup function for loading the cog"""
